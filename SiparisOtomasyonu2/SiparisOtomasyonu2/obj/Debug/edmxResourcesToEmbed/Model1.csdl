@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="siparis_OtomasyonuModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="MusterilerTable">
+    <Key>
+      <PropertyRef Name="MusterilerId" />
+    </Key>
+    <Property Name="MusterilerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Ad" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Soyad" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Adres" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Telefon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="MusteriTipi" Type="Int32" Nullable="false" />
+    <Property Name="KullaniciAdi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Sifre" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="SiparisListesiTable" Relationship="Self.FK_SiparisListesiTable_MusterilerTable" FromRole="MusterilerTable" ToRole="SiparisListesiTable" />
+  </EntityType>
+  <EntityType Name="SiparisListesiTable">
+    <Key>
+      <PropertyRef Name="SiparisListesiId" />
+    </Key>
+    <Property Name="SiparisListesiId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MusterilerId" Type="Int32" Nullable="false" />
+    <Property Name="UrunToplamFiyat" Type="Double" Nullable="false" />
+    <Property Name="SparisTarih" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="MusterilerTable" Relationship="Self.FK_SiparisListesiTable_MusterilerTable" FromRole="SiparisListesiTable" ToRole="MusterilerTable" />
+    <NavigationProperty Name="SiparisUrunler" Relationship="Self.FK_SiparisUrunler_SiparisListesiTable" FromRole="SiparisListesiTable" ToRole="SiparisUrunler" />
+  </EntityType>
+  <EntityType Name="SiparisUrunler">
+    <Key>
+      <PropertyRef Name="SiparisUrunId" />
+    </Key>
+    <Property Name="SiparisListesiId" Type="Int32" Nullable="false" />
+    <Property Name="MusteriId" Type="Int32" Nullable="false" />
+    <Property Name="SiparisUrunId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UrunId" Type="Int32" Nullable="false" />
+    <Property Name="UrunAdet" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="SiparisListesiTable" Relationship="Self.FK_SiparisUrunler_SiparisListesiTable" FromRole="SiparisUrunler" ToRole="SiparisListesiTable" />
+    <NavigationProperty Name="UrunlerTable" Relationship="Self.FK_SiparisUrunler_UrunlerTable1" FromRole="SiparisUrunler" ToRole="UrunlerTable" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="UrunlerTable">
+    <Key>
+      <PropertyRef Name="UrunId" />
+    </Key>
+    <Property Name="UrunId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UrunAdı" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UrunFiyat" Type="Double" Nullable="false" />
+    <Property Name="UrunKategori" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UrunAciklama" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="SiparisUrunler" Relationship="Self.FK_SiparisUrunler_UrunlerTable1" FromRole="UrunlerTable" ToRole="SiparisUrunler" />
+  </EntityType>
+  <Association Name="FK_SiparisListesiTable_MusterilerTable">
+    <End Role="MusterilerTable" Type="Self.MusterilerTable" Multiplicity="1" />
+    <End Role="SiparisListesiTable" Type="Self.SiparisListesiTable" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MusterilerTable">
+        <PropertyRef Name="MusterilerId" />
+      </Principal>
+      <Dependent Role="SiparisListesiTable">
+        <PropertyRef Name="MusterilerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SiparisUrunler_SiparisListesiTable">
+    <End Role="SiparisListesiTable" Type="Self.SiparisListesiTable" Multiplicity="1" />
+    <End Role="SiparisUrunler" Type="Self.SiparisUrunler" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SiparisListesiTable">
+        <PropertyRef Name="SiparisListesiId" />
+      </Principal>
+      <Dependent Role="SiparisUrunler">
+        <PropertyRef Name="SiparisListesiId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SiparisUrunler_UrunlerTable1">
+    <End Role="UrunlerTable" Type="Self.UrunlerTable" Multiplicity="1" />
+    <End Role="SiparisUrunler" Type="Self.SiparisUrunler" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UrunlerTable">
+        <PropertyRef Name="UrunId" />
+      </Principal>
+      <Dependent Role="SiparisUrunler">
+        <PropertyRef Name="UrunId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="siparis_OtomasyonuEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="MusterilerTable" EntityType="Self.MusterilerTable" />
+    <EntitySet Name="SiparisListesiTable" EntityType="Self.SiparisListesiTable" />
+    <EntitySet Name="SiparisUrunler" EntityType="Self.SiparisUrunler" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="UrunlerTable" EntityType="Self.UrunlerTable" />
+    <AssociationSet Name="FK_SiparisListesiTable_MusterilerTable" Association="Self.FK_SiparisListesiTable_MusterilerTable">
+      <End Role="MusterilerTable" EntitySet="MusterilerTable" />
+      <End Role="SiparisListesiTable" EntitySet="SiparisListesiTable" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SiparisUrunler_SiparisListesiTable" Association="Self.FK_SiparisUrunler_SiparisListesiTable">
+      <End Role="SiparisListesiTable" EntitySet="SiparisListesiTable" />
+      <End Role="SiparisUrunler" EntitySet="SiparisUrunler" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SiparisUrunler_UrunlerTable1" Association="Self.FK_SiparisUrunler_UrunlerTable1">
+      <End Role="UrunlerTable" EntitySet="UrunlerTable" />
+      <End Role="SiparisUrunler" EntitySet="SiparisUrunler" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
